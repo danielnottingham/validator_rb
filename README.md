@@ -1,43 +1,78 @@
 # Validator
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/validator`. To experiment with that code, run `bin/console` for an interactive prompt.
+Schema validation library with fluent API inspired by Zod.
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add to your Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+```ruby
+gem 'validator'
 ```
 
-If bundler is not being used to manage dependencies, install the gem by executing:
+Or install directly:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install validator
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Basic String Validation
+
+```ruby
+require 'validator'
+
+# Simple validation
+validator = Validator.string.min(3).max(50)
+result = validator.validate("hello")
+
+result.success?  # => true
+result.errors    # => []
+
+# With required
+validator = Validator.string.email.required
+result = validator.validate(nil)
+result.success?  # => false
+result.errors    # => ["is required"]
+```
+
+### Chaining Validations
+
+```ruby
+validator = Validator.string
+  .min(8)
+  .max(100)
+  .email
+  .required
+
+result = validator.validate("user@example.com")
+```
+
+## Available Validators
+
+### String
+
+- `.min(length)` - Minimum length
+- `.max(length)` - Maximum length
+- `.email` - Valid email format
+- `.non_empty` - Not empty or whitespace
+- `.required` - Field is required
+- `.optional` - Field is optional (default)
 
 ## Development
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+After checking out the repo, run:
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+```bash
+bundle install
+bundle exec rspec
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/validator. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/validator/blob/master/CODE_OF_CONDUCT.md).
+Bug reports and pull requests are welcome!
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Validator project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/validator/blob/master/CODE_OF_CONDUCT.md).
+MIT License
