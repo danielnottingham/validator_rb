@@ -51,4 +51,21 @@ RSpec.describe Validator::Result do
       expect(result.error_message).to eq("")
     end
   end
+
+  describe "#value" do
+    it "returns the transformed value when provided" do
+      result = Validator::Result.new(true, [], "hello")
+      expect(result.value).to eq("hello")
+    end
+
+    it "returns nil when no value is provided" do
+      result = Validator::Result.new(true, [])
+      expect(result.value).to be_nil
+    end
+
+    it "stores the value even on failed validation" do
+      result = Validator::Result.new(false, ["error"], "invalid")
+      expect(result.value).to eq("invalid")
+    end
+  end
 end

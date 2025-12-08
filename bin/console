@@ -4,8 +4,27 @@
 require "bundler/setup"
 require "validator"
 
-# You can add fixtures and/or initialization code here to make experimenting
-# with your gem easier. You can also use a different console, if you like.
+# Preload some example validators for quick testing
+puts "=" * 60
+puts "Validator Interactive Console"
+puts "=" * 60
+puts ""
+puts "Example validators loaded:"
+puts "  • email_validator    - Trimmed and lowercase email"
+puts "  • username_validator - Alphanumeric username (3-20 chars)"
+puts "  • url_validator      - URL format validation"
+puts "  • password_validator - Strong password requirements"
+puts ""
+puts "Try:"
+puts '  email_validator.validate("  USER@EXAMPLE.COM  ")'
+puts '  username_validator.validate("john123")'
+puts ""
+
+# Define example validators
+Validator.string.trimmed_email.required
+Validator.string.trim.min(3).max(20).alphanumeric.required
+Validator.string.url.required
+Validator.string.min(8).max(128).required
 
 require "irb"
 IRB.start(__FILE__)
