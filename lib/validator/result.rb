@@ -3,13 +3,15 @@
 module Validator
   # Represents the result of a validation operation
   #
-  # Encapsulates the success/failure status and errors found during validation.
+  # Encapsulates the success/failure status, errors found during validation,
+  # and the transformed value (if transformations were applied).
   # Provides convenient methods to check the result and access error messages.
   #
   # @example Successful result
-  #   result = Result.new(true, [])
+  #   result = Result.new(true, [], "hello")
   #   result.success? # => true
   #   result.failure? # => false
+  #   result.value    # => "hello"
   #
   # @example Result with errors
   #   result = Result.new(false, ["must be valid", "must be longer"])
@@ -17,15 +19,18 @@ module Validator
   #   result.error_message # => "must be valid, must be longer"
   class Result
     # @return [Array<String>] list of error messages
-    attr_reader :errors
+    # @return [Object] the transformed/validated value
+    attr_reader :errors, :value
 
     # Initializes a new Result
     #
     # @param success [Boolean] indicates whether the validation was successful
     # @param errors [Array<String>] list of error messages (default: [])
-    def initialize(success, errors = [])
+    # @param value [Object] the transformed/validated value (default: nil)
+    def initialize(success, errors = [], value = nil)
       @success = success
       @errors = errors
+      @value = value
     end
 
     # Checks if the validation was successful

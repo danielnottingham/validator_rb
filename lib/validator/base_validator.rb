@@ -14,14 +14,16 @@ module Validator
   # @abstract
   class BaseValidator
     # @return [Array<Proc>] list of validation blocks to be executed
+    # @return [Array<Proc>] list of transformation blocks to be executed
     # @return [Boolean] indicates whether the field is required
-    attr_reader :validations, :is_required
+    attr_reader :validations, :transformations, :is_required
 
     # Initializes a new validator
     #
-    # By default, the validator is optional and has no validations
+    # By default, the validator is optional and has no validations or transformations
     def initialize
       @validations = []
+      @transformations = []
       @is_required = false
     end
 
@@ -56,14 +58,24 @@ module Validator
 
     # Executes all configured validations on the provided value
     #
+    # Applies transformations first, then runs validations on the transformed value.
+    # Returns a Result object containing the validation status, any errors, and the
+    # transformed value.
+    #
     # @param value [Object] the value to be validated
-    # @return [Result] object containing the validation result and any errors
+    # @return [Result] object containing the validation result, errors, and transformed value
     #
     # @example Successful validation
     #   validator = Validator.string.min(3)
     #   result = validator.validate("hello")
     #   result.success? # => true
     #   result.errors   # => []
+    #   result.value    # => "hello"
+    #
+    # @example Validation with transformations
+    #   validator = Validator.string.trim.lowercase
+    #   result = validator.validate("  HELLO  ")
+    #   result.value # => "hello"
     #
     # @example Validation with errors
     #   validator = Validator.string.min(5).email
@@ -75,17 +87,24 @@ module Validator
 
       if @is_required && nil_or_empty?(value)
         errors << "is required"
-        return Result.new(false, errors)
+        return Result.new(false, errors, value)
       end
 
-      return Result.new(true, []) if nil_or_empty?(value)
+      return Result.new(true, [], value) if nil_or_empty?(value)
 
+      # Apply transformations
+      transformed_value = value
+      @transformations.each do |transformation|
+        transformed_value = transformation.call(transformed_value)
+      end
+
+      # Run validations on transformed value
       @validations.each do |validation|
-        result = validation.call(value)
+        result = validation.call(transformed_value)
         errors << result unless result == true
       end
 
-      Result.new(errors.empty?, errors)
+      Result.new(errors.empty?, errors, transformed_value)
     end
 
     protected
@@ -93,15 +112,42 @@ module Validator
     # Adds a validation block to the list of validations
     #
     # This method is used internally by subclasses to add
-    # specific validation rules
+    # specific validation rules with optional custom error messages
     #
+    # @param message [String, nil] optional custom error message
     # @param block [Proc] block that receives the value and returns true or error message
     # @return [self] for method chaining
     #
     # @example Internal use in subclass
     #   add_validation { |value| value.length > 5 || "must be longer" }
-    def add_validation(&block)
-      @validations << block
+    #
+    # @example With custom message
+    #   add_validation(message: "custom error") { |value| value.length > 5 }
+    def add_validation(message: nil, &block)
+      validation = if message
+                     lambda do |value|
+                       result = block.call(value)
+                       result == true ? true : message
+                     end
+                   else
+                     block
+                   end
+      @validations << validation
+      self
+    end
+
+    # Adds a transformation block to the list of transformations
+    #
+    # This method is used internally by subclasses to add
+    # transformation functions that modify the value before validation
+    #
+    # @param block [Proc] block that receives the value and returns the transformed value
+    # @return [self] for method chaining
+    #
+    # @example Internal use in subclass
+    #   add_transformation { |value| value.strip }
+    def add_transformation(&block)
+      @transformations << block
       self
     end
 
