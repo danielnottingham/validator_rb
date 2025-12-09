@@ -36,7 +36,7 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/YOUR_USERNAME/validator.git
+git clone https://github.com/danielnottingham/validator.git
 cd validator
 
 # Install dependencies
