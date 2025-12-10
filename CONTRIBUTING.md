@@ -114,7 +114,7 @@ end
 
 ### Commit Messages
 
-- Use the present tense ("feat:Add feature" not "Added feature")
+- Use the present tense ("feat: Add feature" not "Added feature")
 - Use the imperative mood ("Move cursor to..." not "Moves cursor to...")
 - Limit the first line to 72 characters or less
 - Reference issues and pull requests liberally after the first line
@@ -138,6 +138,7 @@ validator/
 ├── lib/
 │   └── validator/
 │       ├── base_validator.rb    # Base validation logic
+│       ├── integer_validator.rb # Integer validators
 │       ├── string_validator.rb  # String validators
 │       ├── result.rb            # Result object
 │       └── version.rb           # Version info

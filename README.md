@@ -351,7 +351,7 @@ Bug reports and pull requests are welcome on GitHub!
 
 ## Roadmap
 
-- [ ] Additional validators (integer, float, boolean, array, hash)
+- [ ] Additional validators (float, boolean, array, hash)
 - [ ] Async validation support
 - [ ] Conditional validations
 - [ ] Custom validator registration
