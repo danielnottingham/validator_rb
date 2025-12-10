@@ -117,6 +117,94 @@ result = validator.validate(nil)
 result.success?  # => true
 ```
 
+## Integer Validators
+
+### Range Constraints
+
+```ruby
+# Minimum value
+Validator.integer.min(0).validate(5)
+
+# Maximum value
+Validator.integer.max(100).validate(50)
+
+# Between (inclusive)
+Validator.integer.between(1, 10).validate(5)
+
+# Comparison
+Validator.integer.greater_than(0).validate(5)
+Validator.integer.less_than(100).validate(50)
+```
+
+### Sign Constraints
+
+```ruby
+# Positive (> 0)
+Validator.integer.positive.validate(10)
+
+# Negative (< 0)
+Validator.integer.negative.validate(-5)
+
+# Non-negative (>= 0)
+Validator.integer.non_negative.validate(0)
+
+# Non-positive (<= 0)
+Validator.integer.non_positive.validate(-10)
+```
+
+### Divisibility
+
+```ruby
+# Multiple of
+Validator.integer.multiple_of(5).validate(25)
+
+# Even numbers
+Validator.integer.even.validate(4)
+
+# Odd numbers
+Validator.integer.odd.validate(7)
+```
+
+### Coercion
+
+```ruby
+# Coerce from string
+validator = Validator.integer.coerce.min(100)
+result = validator.validate("150")
+result.success?  # => true
+result.value     # => 150
+
+# Coerce from float (truncates)
+result = validator.validate(123.7)
+result.value  # => 123
+```
+
+### Common Use Cases
+
+```ruby
+# Age validation
+age_validator = Validator.integer
+  .min(0, message: "Age cannot be negative")
+  .max(150, message: "Invalid age")
+  .required
+
+# Rating system (1-5 stars)
+rating_validator = Validator.integer.between(1, 5).required
+
+# Quantity (positive integers only)
+quantity_validator = Validator.integer.positive.required
+
+# Page number validation
+page_validator = Validator.integer.coerce.positive
+  .required
+
+# Discount percentage (0-100)
+discount_validator = Validator.integer
+  .min(0)
+  .max(100)
+  .optional
+```
+
 ## Transformations
 
 Transformations modify the value **before** validation runs. The transformed value is available in `result.value`.
