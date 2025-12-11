@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../lib/validator"
+require_relative "../lib/validator_rb"
 
 # Example: User Registration Form Validation
 
