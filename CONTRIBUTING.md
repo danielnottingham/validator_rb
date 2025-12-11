@@ -1,10 +1,10 @@
-# Contributing to Validator
+# Contributing to ValidatorRb
 
-First off, thank you for considering contributing to Validator! It's people like you that make Validator such a great tool.
+First off, thank you for considering contributing to ValidatorRb! It's people like you that make ValidatorRb such a great tool.
 
 ## Code of Conduct
 
-This project and everyone participating in it is governed by the [Validator Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
+This project and everyone participating in it is governed by the [ValidatorRb Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code.
 
 ## How Can I Contribute?
 
@@ -36,8 +36,8 @@ Enhancement suggestions are tracked as GitHub issues. When creating an enhanceme
 
 ```bash
 # Clone your fork
-git clone https://github.com/danielnottingham/validator.git
-cd validator
+git clone https://github.com/marcosge/validator_rb.git
+cd validator_rb
 
 # Install dependencies
 bundle install
@@ -82,14 +82,14 @@ Example test structure:
 ```ruby
 describe "#new_method" do
   it "passes when condition is met" do
-    validator = Validator.string.new_method
+    validator = ValidatorRb.string.new_method
     result = validator.validate("test")
     
     expect(result.success?).to be true
   end
   
   it "fails when condition is not met" do
-    validator = Validator.string.new_method
+    validator = ValidatorRb.string.new_method
     result = validator.validate("bad")
     
     expect(result.success?).to be false
@@ -97,7 +97,7 @@ describe "#new_method" do
   end
   
   it "supports custom error message" do
-    validator = Validator.string.new_method(message: "custom")
+    validator = ValidatorRb.string.new_method(message: "custom")
     result = validator.validate("bad")
     
     expect(result.errors).to include("custom")

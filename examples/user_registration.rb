@@ -10,27 +10,27 @@ puts "=" * 60
 puts ""
 
 # Define validators for each field
-username_validator = Validator.string
-                              .trim
-                              .min(3, message: "Username must be at least 3 characters")
-                              .max(20, message: "Username cannot exceed 20 characters")
-                              .alphanumeric(message: "Username can only contain letters and numbers")
-                              .required
+username_validator = ValidatorRb.string
+                                .trim
+                                .min(3, message: "Username must be at least 3 characters")
+                                .max(20, message: "Username cannot exceed 20 characters")
+                                .alphanumeric(message: "Username can only contain letters and numbers")
+                                .required
 
-email_validator = Validator.string
-                           .trimmed_email
-                           .required
+email_validator = ValidatorRb.string
+                             .trimmed_email
+                             .required
 
-password_validator = Validator.string
-                              .min(8, message: "Password must be at least 8 characters")
-                              .max(128, message: "Password cannot exceed 128 characters")
-                              .required
+password_validator = ValidatorRb.string
+                                .min(8, message: "Password must be at least 8 characters")
+                                .max(128, message: "Password cannot exceed 128 characters")
+                                .required
 
-name_validator = Validator.string
-                          .trim
-                          .min(1, message: "Name is required")
-                          .max(100, message: "Name cannot exceed 100 characters")
-                          .required
+name_validator = ValidatorRb.string
+                            .trim
+                            .min(1, message: "Name is required")
+                            .max(100, message: "Name cannot exceed 100 characters")
+                            .required
 
 # Simulate user input
 user_data = {

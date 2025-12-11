@@ -2,11 +2,11 @@
 # frozen_string_literal: true
 
 require "bundler/setup"
-require "validator"
+require "validator_rb"
 
 # Preload some example validators for quick testing
 puts "=" * 60
-puts "Validator Interactive Console"
+puts "ValidatorRb Interactive Console"
 puts "=" * 60
 puts ""
 puts "Example validators loaded:"
@@ -21,10 +21,10 @@ puts '  username_validator.validate("john123")'
 puts ""
 
 # Define example validators
-Validator.string.trimmed_email.required
-Validator.string.trim.min(3).max(20).alphanumeric.required
-Validator.string.url.required
-Validator.string.min(8).max(128).required
+ValidatorRb.string.trimmed_email.required
+ValidatorRb.string.trim.min(3).max(20).alphanumeric.required
+ValidatorRb.string.url.required
+ValidatorRb.string.min(8).max(128).required
 
 require "irb"
 IRB.start(__FILE__)

@@ -1,23 +1,23 @@
 # frozen_string_literal: true
 
-module Validator
+module ValidatorRb
   # Validates string values with various constraints
   #
   # Supports transformations (trim, lowercase, uppercase), validations with custom
   # error messages, and convenience shortcuts for common patterns.
   #
   # @example Basic usage
-  #   validator = Validator.string.min(3).max(10)
+  #   validator = ValidatorRb.string.min(3).max(10)
   #   result = validator.validate("hello")
   #   result.success? # => true
   #
   # @example With transformations
-  #   validator = Validator.string.trim.lowercase
+  #   validator = ValidatorRb.string.trim.lowercase
   #   result = validator.validate("  HELLO  ")
   #   result.value # => "hello"
   #
   # @example With custom error messages
-  #   validator = Validator.string.min(3, message: "too short!")
+  #   validator = ValidatorRb.string.min(3, message: "too short!")
   #   result = validator.validate("hi")
   #   result.error_message # => "too short!"
   class StringValidator < BaseValidator
@@ -33,11 +33,11 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.min(5).validate("hello") # passes
-    #   Validator.string.min(5).validate("hi")    # fails
+    #   ValidatorRb.string.min(5).validate("hello") # passes
+    #   ValidatorRb.string.min(5).validate("hi")    # fails
     #
     # @example With custom message
-    #   Validator.string.min(5, message: "too short!").validate("hi")
+    #   ValidatorRb.string.min(5, message: "too short!").validate("hi")
     def min(length, message: nil)
       add_validation(message: message) do |value|
         value.length >= length || "must be at least #{length} characters"
@@ -51,8 +51,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.max(5).validate("hello") # passes
-    #   Validator.string.max(5).validate("hello world") # fails
+    #   ValidatorRb.string.max(5).validate("hello") # passes
+    #   ValidatorRb.string.max(5).validate("hello world") # fails
     def max(length, message: nil)
       add_validation(message: message) do |value|
         value.length <= length || "must be at most #{length} characters"
@@ -66,8 +66,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.length(5).validate("hello") # passes
-    #   Validator.string.length(5).validate("hi")    # fails
+    #   ValidatorRb.string.length(5).validate("hello") # passes
+    #   ValidatorRb.string.length(5).validate("hi")    # fails
     def length(exact_length, message: nil)
       add_validation(message: message) do |value|
         value.length == exact_length || "must be exactly #{exact_length} characters"
@@ -85,8 +85,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.email.validate("user@example.com") # passes
-    #   Validator.string.email.validate("invalid-email")    # fails
+    #   ValidatorRb.string.email.validate("user@example.com") # passes
+    #   ValidatorRb.string.email.validate("invalid-email")    # fails
     def email(message: nil)
       add_validation(message: message) do |value|
         value.match?(/\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i) || "must be a valid email"
@@ -99,8 +99,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.url.validate("https://example.com") # passes
-    #   Validator.string.url.validate("not-a-url")           # fails
+    #   ValidatorRb.string.url.validate("https://example.com") # passes
+    #   ValidatorRb.string.url.validate("not-a-url")           # fails
     def url(message: nil)
       add_validation(message: message) do |value|
         value.match?(URL_REGEX) || "must be a valid URL"
@@ -114,7 +114,7 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.regex(/\A[A-Z]+\z/, message: "must be uppercase letters").validate("ABC")
+    #   ValidatorRb.string.regex(/\A[A-Z]+\z/, message: "must be uppercase letters").validate("ABC")
     def regex(pattern, message: nil)
       add_validation(message: message) do |value|
         value.match?(pattern) || "must match pattern #{pattern.inspect}"
@@ -127,8 +127,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.alphanumeric.validate("abc123") # passes
-    #   Validator.string.alphanumeric.validate("abc-123") # fails
+    #   ValidatorRb.string.alphanumeric.validate("abc123") # passes
+    #   ValidatorRb.string.alphanumeric.validate("abc-123") # fails
     def alphanumeric(message: nil)
       add_validation(message: message) do |value|
         value.match?(/\A[a-z0-9]+\z/i) || "must contain only letters and numbers"
@@ -141,8 +141,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.alpha.validate("abc") # passes
-    #   Validator.string.alpha.validate("abc123") # fails
+    #   ValidatorRb.string.alpha.validate("abc") # passes
+    #   ValidatorRb.string.alpha.validate("abc123") # fails
     def alpha(message: nil)
       add_validation(message: message) do |value|
         value.match?(/\A[a-z]+\z/i) || "must contain only letters"
@@ -155,8 +155,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.numeric_string.validate("123") # passes
-    #   Validator.string.numeric_string.validate("12.3") # fails
+    #   ValidatorRb.string.numeric_string.validate("123") # passes
+    #   ValidatorRb.string.numeric_string.validate("12.3") # fails
     def numeric_string(message: nil)
       add_validation(message: message) do |value|
         value.match?(/\A[0-9]+\z/) || "must contain only numbers"
@@ -174,9 +174,9 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.non_empty.validate("hello")  # passes
-    #   Validator.string.non_empty.validate("   ")    # fails
-    #   Validator.string.non_empty.validate("")       # fails
+    #   ValidatorRb.string.non_empty.validate("hello")  # passes
+    #   ValidatorRb.string.non_empty.validate("   ")    # fails
+    #   ValidatorRb.string.non_empty.validate("")       # fails
     def non_empty(message: nil)
       add_validation(message: message) do |value|
         !value.strip.empty? || "cannot be empty or only whitespace"
@@ -190,8 +190,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.starts_with("hello").validate("hello world") # passes
-    #   Validator.string.starts_with("hello").validate("goodbye")     # fails
+    #   ValidatorRb.string.starts_with("hello").validate("hello world") # passes
+    #   ValidatorRb.string.starts_with("hello").validate("goodbye")     # fails
     def starts_with(prefix, message: nil)
       add_validation(message: message) do |value|
         value.start_with?(prefix) || "must start with '#{prefix}'"
@@ -205,8 +205,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.ends_with(".com").validate("example.com") # passes
-    #   Validator.string.ends_with(".com").validate("example.org") # fails
+    #   ValidatorRb.string.ends_with(".com").validate("example.com") # passes
+    #   ValidatorRb.string.ends_with(".com").validate("example.org") # fails
     def ends_with(suffix, message: nil)
       add_validation(message: message) do |value|
         value.end_with?(suffix) || "must end with '#{suffix}'"
@@ -220,7 +220,7 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   validator = Validator.string.trim
+    #   validator = ValidatorRb.string.trim
     #   result = validator.validate("  hello  ")
     #   result.value # => "hello"
     def trim
@@ -232,7 +232,7 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   validator = Validator.string.lowercase
+    #   validator = ValidatorRb.string.lowercase
     #   result = validator.validate("HELLO")
     #   result.value # => "hello"
     def lowercase
@@ -244,7 +244,7 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   validator = Validator.string.uppercase
+    #   validator = ValidatorRb.string.uppercase
     #   result = validator.validate("hello")
     #   result.value # => "HELLO"
     def uppercase
@@ -260,7 +260,7 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   validator = Validator.string.non_empty_string
+    #   validator = ValidatorRb.string.non_empty_string
     #   result = validator.validate("  hello  ")
     #   result.value # => "hello"
     def non_empty_string
@@ -272,7 +272,7 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   validator = Validator.string.trimmed_email
+    #   validator = ValidatorRb.string.trimmed_email
     #   result = validator.validate("  USER@EXAMPLE.COM  ")
     #   result.value # => "user@example.com"
     def trimmed_email

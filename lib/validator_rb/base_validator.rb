@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Validator
+module ValidatorRb
   # Base class for all validators
   #
   # Provides common validation functionality including:
@@ -35,8 +35,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.required.validate("")  # => Result(success: false)
-    #   Validator.string.required.validate(nil) # => Result(success: false)
+    #   ValidatorRb.string.required.validate("")  # => Result(success: false)
+    #   ValidatorRb.string.required.validate(nil) # => Result(success: false)
     def required
       @is_required = true
       self
@@ -49,8 +49,8 @@ module Validator
     # @return [self] for method chaining
     #
     # @example
-    #   Validator.string.optional.validate("")  # => Result(success: true)
-    #   Validator.string.optional.validate(nil) # => Result(success: true)
+    #   ValidatorRb.string.optional.validate("")  # => Result(success: true)
+    #   ValidatorRb.string.optional.validate(nil) # => Result(success: true)
     def optional
       @is_required = false
       self
@@ -66,19 +66,19 @@ module Validator
     # @return [Result] object containing the validation result, errors, and transformed value
     #
     # @example Successful validation
-    #   validator = Validator.string.min(3)
+    #   validator = ValidatorRb.string.min(3)
     #   result = validator.validate("hello")
     #   result.success? # => true
     #   result.errors   # => []
     #   result.value    # => "hello"
     #
     # @example Validation with transformations
-    #   validator = Validator.string.trim.lowercase
+    #   validator = ValidatorRb.string.trim.lowercase
     #   result = validator.validate("  HELLO  ")
     #   result.value # => "hello"
     #
     # @example Validation with errors
-    #   validator = Validator.string.min(5).email
+    #   validator = ValidatorRb.string.min(5).email
     #   result = validator.validate("hi")
     #   result.success?      # => false
     #   result.error_message # => "must be at least 5 characters, must be a valid email"

@@ -1,4 +1,4 @@
-# Validator
+# ValidatorRb
 
 A fluent, type-safe schema validation library for Ruby inspired by Zod. Build complex validations with chainable methods, custom error messages, and built-in transformations.
 
@@ -19,22 +19,22 @@ A fluent, type-safe schema validation library for Ruby inspired by Zod. Build co
 Add to your Gemfile:
 
 ```ruby
-gem 'validator'
+gem 'validator_rb'
 ```
 
 Or install directly:
 
 ```bash
-gem install validator
+gem install validator_rb
 ```
 
 ## Quick Start
 
 ```ruby
-require 'validator'
+require 'validator_rb'
 
 # Basic validation
-validator = Validator.string.min(3).max(50)
+validator = ValidatorRb.string.min(3).max(50)
 result = validator.validate("hello")
 
 result.success?  # => true
@@ -42,7 +42,7 @@ result.value     # => "hello"
 result.errors    # => []
 
 # With transformations
-validator = Validator.string.trim.lowercase.email
+validator = ValidatorRb.string.trim.lowercase.email
 result = validator.validate("  USER@EXAMPLE.COM  ")
 
 result.success?  # => true
@@ -55,64 +55,64 @@ result.value     # => "user@example.com"
 
 ```ruby
 # Minimum length
-Validator.string.min(5).validate("hello")
+ValidatorRb.string.min(5).validate("hello")
 
 # Maximum length
-Validator.string.max(10).validate("hello")
+ValidatorRb.string.max(10).validate("hello")
 
 # Exact length
-Validator.string.length(5).validate("hello")
+ValidatorRb.string.length(5).validate("hello")
 
 # Combine constraints
-Validator.string.min(3).max(50).validate("hello")
+ValidatorRb.string.min(3).max(50).validate("hello")
 ```
 
 ### Format Validators
 
 ```ruby
 # Email validation
-Validator.string.email.validate("user@example.com")
+ValidatorRb.string.email.validate("user@example.com")
 
 # URL validation
-Validator.string.url.validate("https://example.com")
+ValidatorRb.string.url.validate("https://example.com")
 
 # Custom regex pattern
-Validator.string.regex(/\A[A-Z]+\z/).validate("HELLO")
+ValidatorRb.string.regex(/\A[A-Z]+\z/).validate("HELLO")
 
 # Alphanumeric only
-Validator.string.alphanumeric.validate("abc123")
+ValidatorRb.string.alphanumeric.validate("abc123")
 
 # Letters only
-Validator.string.alpha.validate("hello")
+ValidatorRb.string.alpha.validate("hello")
 
 # Numbers only
-Validator.string.numeric_string.validate("12345")
+ValidatorRb.string.numeric_string.validate("12345")
 ```
 
 ### Content Validators
 
 ```ruby
 # Not empty or whitespace
-Validator.string.non_empty.validate("hello")
+ValidatorRb.string.non_empty.validate("hello")
 
 # Starts with prefix
-Validator.string.starts_with("hello").validate("hello world")
+ValidatorRb.string.starts_with("hello").validate("hello world")
 
 # Ends with suffix
-Validator.string.ends_with(".com").validate("example.com")
+ValidatorRb.string.ends_with(".com").validate("example.com")
 ```
 
 ### Required/Optional
 
 ```ruby
 # Required field (fails on nil or empty string)
-validator = Validator.string.email.required
+validator = ValidatorRb.string.email.required
 result = validator.validate(nil)
 result.success?  # => false
 result.errors    # => ["is required"]
 
 # Optional field (default - allows nil)
-validator = Validator.string.email.optional
+validator = ValidatorRb.string.email.optional
 result = validator.validate(nil)
 result.success?  # => true
 ```
@@ -123,53 +123,53 @@ result.success?  # => true
 
 ```ruby
 # Minimum value
-Validator.integer.min(0).validate(5)
+ValidatorRb.integer.min(0).validate(5)
 
 # Maximum value
-Validator.integer.max(100).validate(50)
+ValidatorRb.integer.max(100).validate(50)
 
 # Between (inclusive)
-Validator.integer.between(1, 10).validate(5)
+ValidatorRb.integer.between(1, 10).validate(5)
 
 # Comparison
-Validator.integer.greater_than(0).validate(5)
-Validator.integer.less_than(100).validate(50)
+ValidatorRb.integer.greater_than(0).validate(5)
+ValidatorRb.integer.less_than(100).validate(50)
 ```
 
 ### Sign Constraints
 
 ```ruby
 # Positive (> 0)
-Validator.integer.positive.validate(10)
+ValidatorRb.integer.positive.validate(10)
 
 # Negative (< 0)
-Validator.integer.negative.validate(-5)
+ValidatorRb.integer.negative.validate(-5)
 
 # Non-negative (>= 0)
-Validator.integer.non_negative.validate(0)
+ValidatorRb.integer.non_negative.validate(0)
 
 # Non-positive (<= 0)
-Validator.integer.non_positive.validate(-10)
+ValidatorRb.integer.non_positive.validate(-10)
 ```
 
 ### Divisibility
 
 ```ruby
 # Multiple of
-Validator.integer.multiple_of(5).validate(25)
+ValidatorRb.integer.multiple_of(5).validate(25)
 
 # Even numbers
-Validator.integer.even.validate(4)
+ValidatorRb.integer.even.validate(4)
 
 # Odd numbers
-Validator.integer.odd.validate(7)
+ValidatorRb.integer.odd.validate(7)
 ```
 
 ### Coercion
 
 ```ruby
 # Coerce from string
-validator = Validator.integer.coerce.min(100)
+validator = ValidatorRb.integer.coerce.min(100)
 result = validator.validate("150")
 result.success?  # => true
 result.value     # => 150
@@ -183,23 +183,23 @@ result.value  # => 123
 
 ```ruby
 # Age validation
-age_validator = Validator.integer
+age_validator = ValidatorRb.integer
   .min(0, message: "Age cannot be negative")
   .max(150, message: "Invalid age")
   .required
 
 # Rating system (1-5 stars)
-rating_validator = Validator.integer.between(1, 5).required
+rating_validator = ValidatorRb.integer.between(1, 5).required
 
 # Quantity (positive integers only)
-quantity_validator = Validator.integer.positive.required
+quantity_validator = ValidatorRb.integer.positive.required
 
 # Page number validation
-page_validator = Validator.integer.coerce.positive
+page_validator = ValidatorRb.integer.coerce.positive
   .required
 
 # Discount percentage (0-100)
-discount_validator = Validator.integer
+discount_validator = ValidatorRb.integer
   .min(0)
   .max(100)
   .optional
@@ -211,22 +211,22 @@ Transformations modify the value **before** validation runs. The transformed val
 
 ```ruby
 # Trim whitespace
-validator = Validator.string.trim
+validator = ValidatorRb.string.trim
 result = validator.validate("  hello  ")
 result.value  # => "hello"
 
 # Convert to lowercase
-validator = Validator.string.lowercase
+validator = ValidatorRb.string.lowercase
 result = validator.validate("HELLO")
 result.value  # => "hello"
 
 # Convert to uppercase
-validator = Validator.string.uppercase
+validator = ValidatorRb.string.uppercase
 result = validator.validate("hello")
 result.value  # => "HELLO"
 
 # Chain transformations (applied in order)
-validator = Validator.string.trim.lowercase.min(3)
+validator = ValidatorRb.string.trim.lowercase.min(3)
 result = validator.validate("  HELLO  ")
 result.success?  # => true
 result.value     # => "hello"
@@ -238,19 +238,19 @@ Override default error messages for better user experience:
 
 ```ruby
 # Default message
-validator = Validator.string.min(5)
+validator = ValidatorRb.string.min(5)
 result = validator.validate("hi")
 result.errors  # => ["must be at least 5 characters"]
 
 # Custom message
-validator = Validator.string.min(5, message: "Password too short!")
+validator = ValidatorRb.string.min(5, message: "Password too short!")
 result = validator.validate("hi")
 result.errors  # => ["Password too short!"]
 
 # Works with all validators
-Validator.string.email(message: "Invalid email address")
-Validator.string.url(message: "Must be a valid URL")
-Validator.string.regex(/\A[A-Z]+\z/, message: "Must be uppercase letters only")
+ValidatorRb.string.email(message: "Invalid email address")
+ValidatorRb.string.url(message: "Must be a valid URL")
+ValidatorRb.string.regex(/\A[A-Z]+\z/, message: "Must be uppercase letters only")
 ```
 
 ## Convenience Shortcuts
@@ -259,12 +259,12 @@ Pre-configured validator combinations for common use cases:
 
 ```ruby
 # Non-empty string (required + trim + non_empty)
-validator = Validator.string.non_empty_string
+validator = ValidatorRb.string.non_empty_string
 result = validator.validate("  hello  ")
 result.value  # => "hello"
 
 # Trimmed email (trim + lowercase + email)
-validator = Validator.string.trimmed_email
+validator = ValidatorRb.string.trimmed_email
 result = validator.validate("  USER@EXAMPLE.COM  ")
 result.value  # => "user@example.com"
 ```
@@ -274,7 +274,7 @@ result.value  # => "user@example.com"
 ### Complex Validation Pipeline
 
 ```ruby
-validator = Validator.string
+validator = ValidatorRb.string
   .trim                          # Remove whitespace
   .lowercase                     # Convert to lowercase
   .min(3)                        # At least 3 chars
@@ -291,7 +291,7 @@ result.value     # => "user12345"
 ### Error Handling
 
 ```ruby
-validator = Validator.string.min(10).max(5).email
+validator = ValidatorRb.string.min(10).max(5).email
 result = validator.validate("hi")
 
 if result.failure?

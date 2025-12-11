@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-require_relative "lib/validator/version"
+require_relative "lib/validator_rb/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "validator"
-  spec.version = Validator::VERSION
+  spec.name = "validator_rb"
+  spec.version = ValidatorRb::VERSION
   spec.authors = ["Daniel Nottingham"]
   spec.email = ["danielnottingham.ti@gmail.com"]
 
   spec.summary = "Schema validation with fluent API inspired by Zod."
   spec.description = "A learning project to understand Ruby gems, DSLs and method chaining through a Zod-like validation library."
-  spec.homepage = "https://github.com/danielnottingham/validator"
+  spec.homepage = "https://github.com/danielnottingham/validator_rb"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.2.0"
 
@@ -35,9 +35,9 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_development_dependency "debug", "~> 1.9"
-  spec.add_development_dependency "yard", "~> 0.9"
-  spec.add_development_dependency "webrick", "~> 1.8"
   spec.add_development_dependency "simplecov", "~> 0.22"
+  spec.add_development_dependency "webrick", "~> 1.8"
+  spec.add_development_dependency "yard", "~> 0.9"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html

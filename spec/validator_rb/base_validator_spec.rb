@@ -2,29 +2,29 @@
 
 require "spec_helper"
 
-RSpec.describe Validator::BaseValidator do
+RSpec.describe ValidatorRb::BaseValidator do
   describe "#required" do
     it "marks validator as required" do
-      validator = Validator::BaseValidator.new
+      validator = ValidatorRb::BaseValidator.new
       validator.required
       expect(validator.is_required).to be true
     end
 
     it "returns self for chaining" do
-      validator = Validator::BaseValidator.new
+      validator = ValidatorRb::BaseValidator.new
       expect(validator.required).to eq(validator)
     end
   end
 
   describe "#optional" do
     it "marks validator as optional" do
-      validator = Validator::BaseValidator.new
+      validator = ValidatorRb::BaseValidator.new
       validator.required.optional
       expect(validator.is_required).to be false
     end
 
     it "returns self for chaining" do
-      validator = Validator::BaseValidator.new
+      validator = ValidatorRb::BaseValidator.new
       expect(validator.optional).to eq(validator)
     end
   end
@@ -32,7 +32,7 @@ RSpec.describe Validator::BaseValidator do
   describe "#validate" do
     context "when required" do
       it "fails validation for nil value" do
-        validator = Validator::BaseValidator.new.required
+        validator = ValidatorRb::BaseValidator.new.required
         result = validator.validate(nil)
 
         expect(result.success?).to be false
@@ -40,7 +40,7 @@ RSpec.describe Validator::BaseValidator do
       end
 
       it "fails validation for empty string" do
-        validator = Validator::BaseValidator.new.required
+        validator = ValidatorRb::BaseValidator.new.required
         result = validator.validate("")
 
         expect(result.success?).to be false
@@ -50,7 +50,7 @@ RSpec.describe Validator::BaseValidator do
 
     context "when optional" do
       it "passes validation for nil value" do
-        validator = Validator::BaseValidator.new.optional
+        validator = ValidatorRb::BaseValidator.new.optional
         result = validator.validate(nil)
 
         expect(result.success?).to be true
@@ -58,7 +58,7 @@ RSpec.describe Validator::BaseValidator do
       end
 
       it "passes validation for empty string" do
-        validator = Validator::BaseValidator.new.optional
+        validator = ValidatorRb::BaseValidator.new.optional
         result = validator.validate("")
 
         expect(result.success?).to be true

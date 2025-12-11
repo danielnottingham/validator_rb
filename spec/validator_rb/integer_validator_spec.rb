@@ -2,10 +2,10 @@
 
 require "spec_helper"
 
-RSpec.describe Validator::IntegerValidator do
+RSpec.describe ValidatorRb::IntegerValidator do
   describe "#min" do
     it "passes when value meets minimum" do
-      validator = Validator.integer.min(5)
+      validator = ValidatorRb.integer.min(5)
       result = validator.validate(10)
 
       expect(result.success?).to be true
@@ -13,14 +13,14 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "passes when value equals minimum" do
-      validator = Validator.integer.min(5)
+      validator = ValidatorRb.integer.min(5)
       result = validator.validate(5)
 
       expect(result.success?).to be true
     end
 
     it "fails when value is less than minimum" do
-      validator = Validator.integer.min(10)
+      validator = ValidatorRb.integer.min(10)
       result = validator.validate(5)
 
       expect(result.success?).to be false
@@ -28,7 +28,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.min(18, message: "Must be an adult")
+      validator = ValidatorRb.integer.min(18, message: "Must be an adult")
       result = validator.validate(16)
 
       expect(result.success?).to be false
@@ -36,28 +36,28 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports chaining" do
-      validator = Validator.integer.min(0).max(100)
-      expect(validator).to be_a(Validator::IntegerValidator)
+      validator = ValidatorRb.integer.min(0).max(100)
+      expect(validator).to be_a(ValidatorRb::IntegerValidator)
     end
   end
 
   describe "#max" do
     it "passes when value is below maximum" do
-      validator = Validator.integer.max(100)
+      validator = ValidatorRb.integer.max(100)
       result = validator.validate(50)
 
       expect(result.success?).to be true
     end
 
     it "passes when value equals maximum" do
-      validator = Validator.integer.max(100)
+      validator = ValidatorRb.integer.max(100)
       result = validator.validate(100)
 
       expect(result.success?).to be true
     end
 
     it "fails when value exceeds maximum" do
-      validator = Validator.integer.max(10)
+      validator = ValidatorRb.integer.max(10)
       result = validator.validate(15)
 
       expect(result.success?).to be false
@@ -65,7 +65,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.max(100, message: "Too high!")
+      validator = ValidatorRb.integer.max(100, message: "Too high!")
       result = validator.validate(150)
 
       expect(result.success?).to be false
@@ -75,28 +75,28 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#between" do
     it "passes when value is within range" do
-      validator = Validator.integer.between(1, 10)
+      validator = ValidatorRb.integer.between(1, 10)
       result = validator.validate(5)
 
       expect(result.success?).to be true
     end
 
     it "passes when value equals minimum" do
-      validator = Validator.integer.between(1, 10)
+      validator = ValidatorRb.integer.between(1, 10)
       result = validator.validate(1)
 
       expect(result.success?).to be true
     end
 
     it "passes when value equals maximum" do
-      validator = Validator.integer.between(1, 10)
+      validator = ValidatorRb.integer.between(1, 10)
       result = validator.validate(10)
 
       expect(result.success?).to be true
     end
 
     it "fails when value is below range" do
-      validator = Validator.integer.between(5, 10)
+      validator = ValidatorRb.integer.between(5, 10)
       result = validator.validate(3)
 
       expect(result.success?).to be false
@@ -104,7 +104,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails when value is above range" do
-      validator = Validator.integer.between(1, 5)
+      validator = ValidatorRb.integer.between(1, 5)
       result = validator.validate(10)
 
       expect(result.success?).to be false
@@ -112,7 +112,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.between(1, 10, message: "Out of range")
+      validator = ValidatorRb.integer.between(1, 10, message: "Out of range")
       result = validator.validate(15)
 
       expect(result.success?).to be false
@@ -122,14 +122,14 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#greater_than" do
     it "passes when value is greater" do
-      validator = Validator.integer.greater_than(10)
+      validator = ValidatorRb.integer.greater_than(10)
       result = validator.validate(15)
 
       expect(result.success?).to be true
     end
 
     it "fails when value equals threshold" do
-      validator = Validator.integer.greater_than(10)
+      validator = ValidatorRb.integer.greater_than(10)
       result = validator.validate(10)
 
       expect(result.success?).to be false
@@ -137,14 +137,14 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails when value is less" do
-      validator = Validator.integer.greater_than(10)
+      validator = ValidatorRb.integer.greater_than(10)
       result = validator.validate(5)
 
       expect(result.success?).to be false
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.greater_than(0, message: "Must be positive")
+      validator = ValidatorRb.integer.greater_than(0, message: "Must be positive")
       result = validator.validate(0)
 
       expect(result.success?).to be false
@@ -154,14 +154,14 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#less_than" do
     it "passes when value is less" do
-      validator = Validator.integer.less_than(100)
+      validator = ValidatorRb.integer.less_than(100)
       result = validator.validate(50)
 
       expect(result.success?).to be true
     end
 
     it "fails when value equals threshold" do
-      validator = Validator.integer.less_than(10)
+      validator = ValidatorRb.integer.less_than(10)
       result = validator.validate(10)
 
       expect(result.success?).to be false
@@ -169,14 +169,14 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails when value is greater" do
-      validator = Validator.integer.less_than(10)
+      validator = ValidatorRb.integer.less_than(10)
       result = validator.validate(15)
 
       expect(result.success?).to be false
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.less_than(0, message: "Must be negative")
+      validator = ValidatorRb.integer.less_than(0, message: "Must be negative")
       result = validator.validate(5)
 
       expect(result.success?).to be false
@@ -186,7 +186,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#positive" do
     it "passes for positive values" do
-      validator = Validator.integer.positive
+      validator = ValidatorRb.integer.positive
 
       [1, 5, 100, 1000].each do |val|
         result = validator.validate(val)
@@ -195,7 +195,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails for zero" do
-      validator = Validator.integer.positive
+      validator = ValidatorRb.integer.positive
       result = validator.validate(0)
 
       expect(result.success?).to be false
@@ -203,7 +203,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails for negative values" do
-      validator = Validator.integer.positive
+      validator = ValidatorRb.integer.positive
       result = validator.validate(-5)
 
       expect(result.success?).to be false
@@ -211,7 +211,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.positive(message: "Only positive numbers allowed")
+      validator = ValidatorRb.integer.positive(message: "Only positive numbers allowed")
       result = validator.validate(-1)
 
       expect(result.success?).to be false
@@ -221,7 +221,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#negative" do
     it "passes for negative values" do
-      validator = Validator.integer.negative
+      validator = ValidatorRb.integer.negative
 
       [-1, -5, -100].each do |val|
         result = validator.validate(val)
@@ -230,7 +230,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails for zero" do
-      validator = Validator.integer.negative
+      validator = ValidatorRb.integer.negative
       result = validator.validate(0)
 
       expect(result.success?).to be false
@@ -238,14 +238,14 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails for positive values" do
-      validator = Validator.integer.negative
+      validator = ValidatorRb.integer.negative
       result = validator.validate(5)
 
       expect(result.success?).to be false
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.negative(message: "Only negative numbers")
+      validator = ValidatorRb.integer.negative(message: "Only negative numbers")
       result = validator.validate(1)
 
       expect(result.success?).to be false
@@ -255,21 +255,21 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#non_negative" do
     it "passes for zero" do
-      validator = Validator.integer.non_negative
+      validator = ValidatorRb.integer.non_negative
       result = validator.validate(0)
 
       expect(result.success?).to be true
     end
 
     it "passes for positive values" do
-      validator = Validator.integer.non_negative
+      validator = ValidatorRb.integer.non_negative
       result = validator.validate(10)
 
       expect(result.success?).to be true
     end
 
     it "fails for negative values" do
-      validator = Validator.integer.non_negative
+      validator = ValidatorRb.integer.non_negative
       result = validator.validate(-1)
 
       expect(result.success?).to be false
@@ -277,7 +277,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.non_negative(message: "Cannot be negative")
+      validator = ValidatorRb.integer.non_negative(message: "Cannot be negative")
       result = validator.validate(-5)
 
       expect(result.success?).to be false
@@ -287,21 +287,21 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#non_positive" do
     it "passes for zero" do
-      validator = Validator.integer.non_positive
+      validator = ValidatorRb.integer.non_positive
       result = validator.validate(0)
 
       expect(result.success?).to be true
     end
 
     it "passes for negative values" do
-      validator = Validator.integer.non_positive
+      validator = ValidatorRb.integer.non_positive
       result = validator.validate(-10)
 
       expect(result.success?).to be true
     end
 
     it "fails for positive values" do
-      validator = Validator.integer.non_positive
+      validator = ValidatorRb.integer.non_positive
       result = validator.validate(1)
 
       expect(result.success?).to be false
@@ -309,7 +309,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.non_positive(message: "Cannot be positive")
+      validator = ValidatorRb.integer.non_positive(message: "Cannot be positive")
       result = validator.validate(5)
 
       expect(result.success?).to be false
@@ -319,7 +319,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#multiple_of" do
     it "passes when value is a multiple" do
-      validator = Validator.integer.multiple_of(5)
+      validator = ValidatorRb.integer.multiple_of(5)
 
       [0, 5, 10, 25, 100].each do |val|
         result = validator.validate(val)
@@ -328,7 +328,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails when value is not a multiple" do
-      validator = Validator.integer.multiple_of(5)
+      validator = ValidatorRb.integer.multiple_of(5)
       result = validator.validate(23)
 
       expect(result.success?).to be false
@@ -336,14 +336,14 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "works with negative multiples" do
-      validator = Validator.integer.multiple_of(3)
+      validator = ValidatorRb.integer.multiple_of(3)
       result = validator.validate(-9)
 
       expect(result.success?).to be true
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.multiple_of(10, message: "Must be divisible by 10")
+      validator = ValidatorRb.integer.multiple_of(10, message: "Must be divisible by 10")
       result = validator.validate(15)
 
       expect(result.success?).to be false
@@ -353,7 +353,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#even" do
     it "passes for even numbers" do
-      validator = Validator.integer.even
+      validator = ValidatorRb.integer.even
 
       [0, 2, 4, 100, -2, -4].each do |val|
         result = validator.validate(val)
@@ -362,7 +362,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails for odd numbers" do
-      validator = Validator.integer.even
+      validator = ValidatorRb.integer.even
 
       [1, 3, 5, -1, -3].each do |val|
         result = validator.validate(val)
@@ -372,7 +372,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.even(message: "Only even numbers")
+      validator = ValidatorRb.integer.even(message: "Only even numbers")
       result = validator.validate(3)
 
       expect(result.success?).to be false
@@ -382,7 +382,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#odd" do
     it "passes for odd numbers" do
-      validator = Validator.integer.odd
+      validator = ValidatorRb.integer.odd
 
       [1, 3, 5, 99, -1, -3].each do |val|
         result = validator.validate(val)
@@ -391,7 +391,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "fails for even numbers" do
-      validator = Validator.integer.odd
+      validator = ValidatorRb.integer.odd
 
       [0, 2, 4, -2, -4].each do |val|
         result = validator.validate(val)
@@ -401,7 +401,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "supports custom error message" do
-      validator = Validator.integer.odd(message: "Only odd numbers")
+      validator = ValidatorRb.integer.odd(message: "Only odd numbers")
       result = validator.validate(2)
 
       expect(result.success?).to be false
@@ -411,7 +411,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "#coerce" do
     it "coerces string to integer" do
-      validator = Validator.integer.coerce
+      validator = ValidatorRb.integer.coerce
       result = validator.validate("123")
 
       expect(result.success?).to be true
@@ -419,7 +419,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "coerces negative string to integer" do
-      validator = Validator.integer.coerce
+      validator = ValidatorRb.integer.coerce
       result = validator.validate("-42")
 
       expect(result.success?).to be true
@@ -427,7 +427,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "coerces float to integer" do
-      validator = Validator.integer.coerce
+      validator = ValidatorRb.integer.coerce
       result = validator.validate(123.7)
 
       expect(result.success?).to be true
@@ -435,7 +435,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "works with validations after coercion" do
-      validator = Validator.integer.coerce.min(100)
+      validator = ValidatorRb.integer.coerce.min(100)
       result = validator.validate("150")
 
       expect(result.success?).to be true
@@ -443,7 +443,7 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "validation fails if coercion fails" do
-      validator = Validator.integer.coerce.positive
+      validator = ValidatorRb.integer.coerce.positive
       result = validator.validate("not a number")
 
       expect(result.success?).to be false
@@ -452,14 +452,14 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "chaining validations" do
     it "passes when all validations pass" do
-      validator = Validator.integer.min(0).max(100).even
+      validator = ValidatorRb.integer.min(0).max(100).even
       result = validator.validate(50)
 
       expect(result.success?).to be true
     end
 
     it "collects all errors when multiple validations fail" do
-      validator = Validator.integer.min(10).max(100).positive.even
+      validator = ValidatorRb.integer.min(10).max(100).positive.even
       result = validator.validate(5)
 
       expect(result.success?).to be false
@@ -467,12 +467,12 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "works with multiple constraints" do
-      validator = Validator.integer
-                           .min(1)
-                           .max(100)
-                           .positive
-                           .multiple_of(5)
-                           .less_than(50)
+      validator = ValidatorRb.integer
+                             .min(1)
+                             .max(100)
+                             .positive
+                             .multiple_of(5)
+                             .less_than(50)
 
       expect(validator.validate(25).success?).to be true
       expect(validator.validate(0).success?).to be false
@@ -483,7 +483,7 @@ RSpec.describe Validator::IntegerValidator do
 
   describe "integration with required" do
     it "fails for nil when required" do
-      validator = Validator.integer.min(0).required
+      validator = ValidatorRb.integer.min(0).required
       result = validator.validate(nil)
 
       expect(result.success?).to be false
@@ -491,14 +491,14 @@ RSpec.describe Validator::IntegerValidator do
     end
 
     it "passes for nil when optional" do
-      validator = Validator.integer.min(0).optional
+      validator = ValidatorRb.integer.min(0).optional
       result = validator.validate(nil)
 
       expect(result.success?).to be true
     end
 
     it "returns nil value for nil input" do
-      validator = Validator.integer.optional
+      validator = ValidatorRb.integer.optional
       result = validator.validate(nil)
 
       expect(result.value).to be_nil
