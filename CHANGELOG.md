@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- **BREAKING CHANGE**: Renamed gem from `validator` to `validator_rb`
+- **BREAKING CHANGE**: Renamed main module from `Validator` to `ValidatorRb`
+- Updated all file paths and require statements to reflect the new name
+
 ### Added
 - **IntegerValidator** with comprehensive numeric validation:
   - Range validators: `min`, `max`, `between`, `greater_than`, `less_than`

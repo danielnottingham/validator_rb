@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Validator
+module ValidatorRb
   # Represents the result of a validation operation
   #
   # Encapsulates the success/failure status, errors found during validation,

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    validator (0.1.0)
+    validator_rb (0.1.0)
 
 GEM
   remote: https://rubygems.org/
@@ -96,7 +96,7 @@ DEPENDENCIES
   rspec (~> 3.0)
   rubocop (~> 1.21)
   simplecov (~> 0.22)
-  validator!
+  validator_rb!
   webrick (~> 1.8)
   yard (~> 0.9)
 
