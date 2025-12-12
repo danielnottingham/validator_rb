@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ValidatorRb
+  require_relative "validation_error"
+
   # Validates integer values with various constraints
   #
   # Supports range validation, sign constraints, divisibility checks,
@@ -24,7 +26,7 @@ module ValidatorRb
     def initialize
       super
       # Add base type validation - must be an Integer
-      add_validation do |value|
+      add_validation(code: :not_integer) do |value|
         value.is_a?(Integer) || "must be an integer"
       end
     end
@@ -40,7 +42,7 @@ module ValidatorRb
     #   ValidatorRb.integer.min(0).validate(5)   # passes
     #   ValidatorRb.integer.min(10).validate(5)  # fails
     def min(value, message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :too_small) do |val|
         val >= value || "must be at least #{value}"
       end
     end
@@ -55,7 +57,7 @@ module ValidatorRb
     #   ValidatorRb.integer.max(100).validate(50)  # passes
     #   ValidatorRb.integer.max(10).validate(50)   # fails
     def max(value, message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :too_large) do |val|
         val <= value || "must be at most #{value}"
       end
     end
@@ -71,7 +73,7 @@ module ValidatorRb
     #   ValidatorRb.integer.between(1, 10).validate(5)  # passes
     #   ValidatorRb.integer.between(1, 10).validate(15) # fails
     def between(min_value, max_value, message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_in_range) do |val|
         (val >= min_value && val <= max_value) || "must be between #{min_value} and #{max_value}"
       end
     end
@@ -88,7 +90,7 @@ module ValidatorRb
     #   ValidatorRb.integer.greater_than(10).validate(15) # passes
     #   ValidatorRb.integer.greater_than(10).validate(10) # fails
     def greater_than(value, message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_greater_than) do |val|
         val > value || "must be greater than #{value}"
       end
     end
@@ -103,7 +105,7 @@ module ValidatorRb
     #   ValidatorRb.integer.less_than(100).validate(50) # passes
     #   ValidatorRb.integer.less_than(10).validate(10)  # fails
     def less_than(value, message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_less_than) do |val|
         val < value || "must be less than #{value}"
       end
     end
@@ -120,7 +122,7 @@ module ValidatorRb
     #   ValidatorRb.integer.positive.validate(0)  # fails
     #   ValidatorRb.integer.positive.validate(-5) # fails
     def positive(message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_positive) do |val|
         next "must be an integer" unless val.is_a?(Integer)
 
         val.positive? || "must be positive"
@@ -137,7 +139,7 @@ module ValidatorRb
     #   ValidatorRb.integer.negative.validate(0)  # fails
     #   ValidatorRb.integer.negative.validate(5)  # fails
     def negative(message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_negative) do |val|
         next "must be an integer" unless val.is_a?(Integer)
 
         val.negative? || "must be negative"
@@ -154,7 +156,7 @@ module ValidatorRb
     #   ValidatorRb.integer.non_negative.validate(5)  # passes
     #   ValidatorRb.integer.non_negative.validate(-1) # fails
     def non_negative(message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :negative) do |val|
         val >= 0 || "must be non-negative"
       end
     end
@@ -169,7 +171,7 @@ module ValidatorRb
     #   ValidatorRb.integer.non_positive.validate(-5) # passes
     #   ValidatorRb.integer.non_positive.validate(1)  # fails
     def non_positive(message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :positive) do |val|
         val <= 0 || "must be non-positive"
       end
     end
@@ -186,7 +188,7 @@ module ValidatorRb
     #   ValidatorRb.integer.multiple_of(5).validate(25) # passes
     #   ValidatorRb.integer.multiple_of(5).validate(23) # fails
     def multiple_of(divisor, message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_multiple_of) do |val|
         (val % divisor).zero? || "must be a multiple of #{divisor}"
       end
     end
@@ -200,7 +202,7 @@ module ValidatorRb
     #   ValidatorRb.integer.even.validate(4) # passes
     #   ValidatorRb.integer.even.validate(5) # fails
     def even(message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_even) do |val|
         val.even? || "must be even"
       end
     end
@@ -214,7 +216,7 @@ module ValidatorRb
     #   ValidatorRb.integer.odd.validate(5) # passes
     #   ValidatorRb.integer.odd.validate(4) # fails
     def odd(message: nil)
-      add_validation(message: message) do |val|
+      add_validation(message: message, code: :not_odd) do |val|
         val.odd? || "must be odd"
       end
     end

@@ -7,11 +7,13 @@ RSpec.describe ValidatorRb::BaseValidator do
     it "marks validator as required" do
       validator = ValidatorRb::BaseValidator.new
       validator.required
+
       expect(validator.is_required).to be true
     end
 
     it "returns self for chaining" do
       validator = ValidatorRb::BaseValidator.new
+
       expect(validator.required).to eq(validator)
     end
   end
@@ -20,11 +22,13 @@ RSpec.describe ValidatorRb::BaseValidator do
     it "marks validator as optional" do
       validator = ValidatorRb::BaseValidator.new
       validator.required.optional
+
       expect(validator.is_required).to be false
     end
 
     it "returns self for chaining" do
       validator = ValidatorRb::BaseValidator.new
+
       expect(validator.optional).to eq(validator)
     end
   end
@@ -36,7 +40,7 @@ RSpec.describe ValidatorRb::BaseValidator do
         result = validator.validate(nil)
 
         expect(result.success?).to be false
-        expect(result.errors).to include("is required")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("is required", :required))
       end
 
       it "fails validation for empty string" do
@@ -44,7 +48,7 @@ RSpec.describe ValidatorRb::BaseValidator do
         result = validator.validate("")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("is required")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("is required", :required))
       end
     end
 
