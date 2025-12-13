@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - **BREAKING CHANGE**: Renamed gem from `validator` to `validator_rb`
 - **BREAKING CHANGE**: Renamed main module from `Validator` to `ValidatorRb`
+- **BREAKING CHANGE**: `Result#errors` now returns an array of `ValidationError` objects instead of strings. Use `error.message` to get the human-readable message.
 - Updated all file paths and require statements to reflect the new name
 
 ### Added
@@ -34,6 +35,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `non_empty_string` - combines required, trim, and non_empty
   - `trimmed_email` - combines trim, lowercase, and email
 - `Result#value` attribute to access transformed values
+- **Structured Error Object**:
+  - New `ValidationError` class with `message`, `code`, `path`, and `meta` attributes.
+  - Specific error codes for all validators (e.g., `:too_short`, `:invalid_email`).
 - Comprehensive test suite (137 tests with 100% coverage)
 
 ### Changed
