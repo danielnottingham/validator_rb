@@ -3,7 +3,7 @@
 A fluent, type-safe schema validation library for Ruby inspired by Zod. Build complex validations with chainable methods, custom error messages, and built-in transformations.
 
 [![Ruby](https://img.shields.io/badge/ruby-3.2+-red.svg)](https://www.ruby-lang.org)
-[![Tests](https://img.shields.io/badge/tests-138%20passing-success.svg)](spec/)
+[![Tests](https://img.shields.io/badge/tests-143%20passing-success.svg)](spec/)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-success.svg)](coverage/)
 
 ## Features
