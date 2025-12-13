@@ -18,7 +18,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("hello")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must be at least 6 characters")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be at least 6 characters", :too_short))
       end
 
       it "supports custom error message" do
@@ -26,11 +26,12 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("hello")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("too short!")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("too short!", :too_short))
       end
 
       it "supports chaining" do
         validator = ValidatorRb.string.min(3).max(10)
+
         expect(validator).to be_a(ValidatorRb::StringValidator)
       end
     end
@@ -48,7 +49,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("hello")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must be at most 3 characters")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be at most 3 characters", :too_long))
       end
 
       it "supports custom error message" do
@@ -56,11 +57,12 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("hello")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("too long!")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("too long!", :too_long))
       end
 
       it "supports chaining" do
         validator = ValidatorRb.string.max(10).min(3)
+
         expect(validator).to be_a(ValidatorRb::StringValidator)
       end
     end
@@ -78,7 +80,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("invalid-email")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must be a valid email")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be a valid email", :invalid_email))
       end
 
       it "supports custom error message" do
@@ -86,7 +88,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("invalid-email")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("invalid email format")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("invalid email format", :invalid_email))
       end
 
       it "passes for complex valid emails" do
@@ -118,7 +120,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("   ")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("cannot be empty or only whitespace")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("cannot be empty or only whitespace", :empty))
       end
 
       it "supports custom error message" do
@@ -126,7 +128,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("   ")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must not be blank")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must not be blank", :empty))
       end
     end
   end
@@ -144,7 +146,8 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("hi")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be exactly 5 characters")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be exactly 5 characters",
+                                                                        :invalid_length))
     end
 
     it "fails when string is too long" do
@@ -152,7 +155,8 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("hello world")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be exactly 5 characters")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be exactly 5 characters",
+                                                                        :invalid_length))
     end
 
     it "supports custom error message" do
@@ -160,7 +164,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("hi")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("wrong length")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("wrong length", :invalid_length))
     end
   end
 
@@ -194,7 +198,7 @@ RSpec.describe ValidatorRb::StringValidator do
       invalid_urls.each do |url|
         result = validator.validate(url)
         expect(result.success?).to be false
-        expect(result.errors).to include("must be a valid URL")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be a valid URL", :invalid_url))
       end
     end
 
@@ -203,7 +207,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("not-a-url")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("invalid URL format")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("invalid URL format", :invalid_url))
     end
   end
 
@@ -227,7 +231,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("hello")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be uppercase")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be uppercase", :invalid_format))
     end
   end
 
@@ -247,7 +251,8 @@ RSpec.describe ValidatorRb::StringValidator do
       ["abc-123", "abc_123", "abc 123", "abc@123"].each do |str|
         result = validator.validate(str)
         expect(result.success?).to be false
-        expect(result.errors).to include("must contain only letters and numbers")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must contain only letters and numbers",
+                                                                          :not_alphanumeric))
       end
     end
 
@@ -256,7 +261,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("abc-123")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("no special chars")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("no special chars", :not_alphanumeric))
     end
   end
 
@@ -276,7 +281,7 @@ RSpec.describe ValidatorRb::StringValidator do
       ["abc123", "abc-def", "abc def", "abc@"].each do |str|
         result = validator.validate(str)
         expect(result.success?).to be false
-        expect(result.errors).to include("must contain only letters")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must contain only letters", :not_alpha))
       end
     end
 
@@ -285,7 +290,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("abc123")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("letters only")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("letters only", :not_alpha))
     end
   end
 
@@ -305,7 +310,7 @@ RSpec.describe ValidatorRb::StringValidator do
       ["12.3", "12a", "12 3", "-12"].each do |str|
         result = validator.validate(str)
         expect(result.success?).to be false
-        expect(result.errors).to include("must contain only numbers")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must contain only numbers", :not_numeric))
       end
     end
 
@@ -314,7 +319,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate("12.3")
 
       expect(result.success?).to be false
-      expect(result.errors).to include("numbers only")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("numbers only", :not_numeric))
     end
   end
 
@@ -332,7 +337,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("goodbye world")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must start with 'hello'")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must start with 'hello'", :invalid_prefix))
       end
 
       it "supports custom error message" do
@@ -340,7 +345,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("goodbye")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("wrong prefix")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("wrong prefix", :invalid_prefix))
       end
     end
 
@@ -357,7 +362,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("example.org")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must end with '.com'")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must end with '.com'", :invalid_suffix))
       end
 
       it "supports custom error message" do
@@ -365,7 +370,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("example.org")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("wrong suffix")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("wrong suffix", :invalid_suffix))
       end
     end
   end
@@ -459,7 +464,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate(nil)
 
         expect(result.success?).to be false
-        expect(result.errors).to include("is required")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("is required", :required))
       end
 
       it "fails for whitespace only" do
@@ -467,7 +472,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("   ")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("cannot be empty or only whitespace")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("cannot be empty or only whitespace", :empty))
       end
     end
 
@@ -485,7 +490,7 @@ RSpec.describe ValidatorRb::StringValidator do
         result = validator.validate("  INVALID  ")
 
         expect(result.success?).to be false
-        expect(result.errors).to include("must be a valid email")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be a valid email", :invalid_email))
       end
     end
   end
@@ -513,7 +518,7 @@ RSpec.describe ValidatorRb::StringValidator do
       result = validator.validate(nil)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("is required")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("is required", :required))
     end
 
     it "passes for nil when optional" do

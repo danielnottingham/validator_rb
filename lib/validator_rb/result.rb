@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ValidatorRb
+  require_relative "validation_error"
+
   # Represents the result of a validation operation
   #
   # Encapsulates the success/failure status, errors found during validation,
@@ -18,14 +20,14 @@ module ValidatorRb
   #   result.success?      # => false
   #   result.error_message # => "must be valid, must be longer"
   class Result
-    # @return [Array<String>] list of error messages
+    # @return [Array<ValidatorRb::ValidationError>] list of validation errors
     # @return [Object] the transformed/validated value
     attr_reader :errors, :value
 
     # Initializes a new Result
     #
     # @param success [Boolean] indicates whether the validation was successful
-    # @param errors [Array<String>] list of error messages (default: [])
+    # @param errors [Array<ValidatorRb::ValidationError>] list of validation errors (default: [])
     # @param value [Object] the transformed/validated value (default: nil)
     def initialize(success, errors = [], value = nil)
       @success = success
@@ -52,10 +54,10 @@ module ValidatorRb
     # @return [String] error messages separated by comma and space
     #
     # @example
-    #   result = Result.new(false, ["error 1", "error 2"])
+    #   result = Result.new(false, [ValidationError.new("error 1", :code1), ValidationError.new("error 2", :code2)])
     #   result.error_message # => "error 1, error 2"
     def error_message
-      @errors.join(", ")
+      @errors.map(&:message).join(", ")
     end
   end
 end

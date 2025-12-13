@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ValidatorRb
+  require_relative "validation_error"
+
   # Base class for all validators
   #
   # Provides common validation functionality including:
@@ -86,7 +88,7 @@ module ValidatorRb
       errors = []
 
       if @is_required && nil_or_empty?(value)
-        errors << "is required"
+        errors << ValidationError.new("is required", :required)
         return Result.new(false, errors, value)
       end
 
@@ -115,23 +117,26 @@ module ValidatorRb
     # specific validation rules with optional custom error messages
     #
     # @param message [String, nil] optional custom error message
-    # @param block [Proc] block that receives the value and returns true or error message
+    # @param code [Symbol, nil] optional error code
+    # @param block [Proc] block that receives the value and returns true or error message/object
     # @return [self] for method chaining
     #
     # @example Internal use in subclass
-    #   add_validation { |value| value.length > 5 || "must be longer" }
+    #   add_validation(code: :too_short) { |value| value.length > 5 || "must be longer" }
     #
     # @example With custom message
-    #   add_validation(message: "custom error") { |value| value.length > 5 }
-    def add_validation(message: nil, &block)
-      validation = if message
-                     lambda do |value|
-                       result = block.call(value)
-                       result == true ? true : message
-                     end
-                   else
-                     block
-                   end
+    #   add_validation(message: "custom error", code: :custom) { |value| value.length > 5 }
+    def add_validation(message: nil, code: :invalid, &block)
+      validation = lambda do |value|
+        result = block.call(value)
+
+        return true if result == true
+        return result if result.is_a?(ValidationError)
+
+        msg = message || (result.is_a?(String) ? result : "invalid value")
+        ValidationError.new(msg, code)
+      end
+
       @validations << validation
       self
     end

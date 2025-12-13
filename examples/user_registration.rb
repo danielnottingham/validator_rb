@@ -32,12 +32,19 @@ name_validator = ValidatorRb.string
                             .max(100, message: "Name cannot exceed 100 characters")
                             .required
 
+age_validator = ValidatorRb.integer
+                           .coerce
+                           .min(18, message: "Must be at least 18 years old")
+                           .max(120, message: "Invalid age")
+                           .required
+
 # Simulate user input
 user_data = {
   username: "  john_doe123!  ",  # Invalid: contains special char
   email: "  JOHN@EXAMPLE.COM  ", # Valid: will be trimmed and lowercased
   password: "pass",                # Invalid: too short
-  name: "  John Doe  "             # Valid: will be trimmed
+  name: "  John Doe  ",            # Valid: will be trimmed
+  age: "16"                        # Invalid: too young (will be coerced to int)
 }
 
 puts "Validating user input..."
@@ -48,7 +55,8 @@ results = {
   username: username_validator.validate(user_data[:username]),
   email: email_validator.validate(user_data[:email]),
   password: password_validator.validate(user_data[:password]),
-  name: name_validator.validate(user_data[:name])
+  name: name_validator.validate(user_data[:name]),
+  age: age_validator.validate(user_data[:age])
 }
 
 # Display results
@@ -60,7 +68,7 @@ results.each do |field, result|
 
   if result.failure?
     result.errors.each do |error|
-      puts "    • #{error}"
+      puts "    • #{error.message}"
     end
   end
 

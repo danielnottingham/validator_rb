@@ -39,7 +39,7 @@ module ValidatorRb
     # @example With custom message
     #   ValidatorRb.string.min(5, message: "too short!").validate("hi")
     def min(length, message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :too_short) do |value|
         value.length >= length || "must be at least #{length} characters"
       end
     end
@@ -54,7 +54,7 @@ module ValidatorRb
     #   ValidatorRb.string.max(5).validate("hello") # passes
     #   ValidatorRb.string.max(5).validate("hello world") # fails
     def max(length, message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :too_long) do |value|
         value.length <= length || "must be at most #{length} characters"
       end
     end
@@ -69,7 +69,7 @@ module ValidatorRb
     #   ValidatorRb.string.length(5).validate("hello") # passes
     #   ValidatorRb.string.length(5).validate("hi")    # fails
     def length(exact_length, message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :invalid_length) do |value|
         value.length == exact_length || "must be exactly #{exact_length} characters"
       end
     end
@@ -88,7 +88,7 @@ module ValidatorRb
     #   ValidatorRb.string.email.validate("user@example.com") # passes
     #   ValidatorRb.string.email.validate("invalid-email")    # fails
     def email(message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :invalid_email) do |value|
         value.match?(/\A[\w+\-.]+@[a-z\d-]+(\.[a-z\d-]+)*\.[a-z]+\z/i) || "must be a valid email"
       end
     end
@@ -102,7 +102,7 @@ module ValidatorRb
     #   ValidatorRb.string.url.validate("https://example.com") # passes
     #   ValidatorRb.string.url.validate("not-a-url")           # fails
     def url(message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :invalid_url) do |value|
         value.match?(URL_REGEX) || "must be a valid URL"
       end
     end
@@ -116,7 +116,7 @@ module ValidatorRb
     # @example
     #   ValidatorRb.string.regex(/\A[A-Z]+\z/, message: "must be uppercase letters").validate("ABC")
     def regex(pattern, message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :invalid_format) do |value|
         value.match?(pattern) || "must match pattern #{pattern.inspect}"
       end
     end
@@ -130,7 +130,7 @@ module ValidatorRb
     #   ValidatorRb.string.alphanumeric.validate("abc123") # passes
     #   ValidatorRb.string.alphanumeric.validate("abc-123") # fails
     def alphanumeric(message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :not_alphanumeric) do |value|
         value.match?(/\A[a-z0-9]+\z/i) || "must contain only letters and numbers"
       end
     end
@@ -144,7 +144,7 @@ module ValidatorRb
     #   ValidatorRb.string.alpha.validate("abc") # passes
     #   ValidatorRb.string.alpha.validate("abc123") # fails
     def alpha(message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :not_alpha) do |value|
         value.match?(/\A[a-z]+\z/i) || "must contain only letters"
       end
     end
@@ -158,7 +158,7 @@ module ValidatorRb
     #   ValidatorRb.string.numeric_string.validate("123") # passes
     #   ValidatorRb.string.numeric_string.validate("12.3") # fails
     def numeric_string(message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :not_numeric) do |value|
         value.match?(/\A[0-9]+\z/) || "must contain only numbers"
       end
     end
@@ -178,7 +178,7 @@ module ValidatorRb
     #   ValidatorRb.string.non_empty.validate("   ")    # fails
     #   ValidatorRb.string.non_empty.validate("")       # fails
     def non_empty(message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :empty) do |value|
         !value.strip.empty? || "cannot be empty or only whitespace"
       end
     end
@@ -193,7 +193,7 @@ module ValidatorRb
     #   ValidatorRb.string.starts_with("hello").validate("hello world") # passes
     #   ValidatorRb.string.starts_with("hello").validate("goodbye")     # fails
     def starts_with(prefix, message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :invalid_prefix) do |value|
         value.start_with?(prefix) || "must start with '#{prefix}'"
       end
     end
@@ -208,7 +208,7 @@ module ValidatorRb
     #   ValidatorRb.string.ends_with(".com").validate("example.com") # passes
     #   ValidatorRb.string.ends_with(".com").validate("example.org") # fails
     def ends_with(suffix, message: nil)
-      add_validation(message: message) do |value|
+      add_validation(message: message, code: :invalid_suffix) do |value|
         value.end_with?(suffix) || "must end with '#{suffix}'"
       end
     end

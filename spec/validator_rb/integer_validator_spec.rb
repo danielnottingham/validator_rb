@@ -24,7 +24,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(5)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be at least 10")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be at least 10", :too_small))
     end
 
     it "supports custom error message" do
@@ -32,11 +32,12 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(16)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Must be an adult")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Must be an adult", :too_small))
     end
 
     it "supports chaining" do
       validator = ValidatorRb.integer.min(0).max(100)
+
       expect(validator).to be_a(ValidatorRb::IntegerValidator)
     end
   end
@@ -61,7 +62,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(15)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be at most 10")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be at most 10", :too_large))
     end
 
     it "supports custom error message" do
@@ -69,7 +70,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(150)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Too high!")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Too high!", :too_large))
     end
   end
 
@@ -100,7 +101,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(3)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be between 5 and 10")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be between 5 and 10", :not_in_range))
     end
 
     it "fails when value is above range" do
@@ -108,7 +109,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(10)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be between 1 and 5")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be between 1 and 5", :not_in_range))
     end
 
     it "supports custom error message" do
@@ -116,7 +117,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(15)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Out of range")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Out of range", :not_in_range))
     end
   end
 
@@ -133,7 +134,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(10)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be greater than 10")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be greater than 10", :not_greater_than))
     end
 
     it "fails when value is less" do
@@ -148,7 +149,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(0)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Must be positive")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Must be positive", :not_greater_than))
     end
   end
 
@@ -165,7 +166,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(10)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be less than 10")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be less than 10", :not_less_than))
     end
 
     it "fails when value is greater" do
@@ -180,7 +181,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(5)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Must be negative")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Must be negative", :not_less_than))
     end
   end
 
@@ -199,7 +200,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(0)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be positive")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be positive", :not_positive))
     end
 
     it "fails for negative values" do
@@ -207,7 +208,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(-5)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be positive")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be positive", :not_positive))
     end
 
     it "supports custom error message" do
@@ -215,7 +216,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(-1)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Only positive numbers allowed")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Only positive numbers allowed", :not_positive))
     end
   end
 
@@ -234,7 +235,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(0)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be negative")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be negative", :not_negative))
     end
 
     it "fails for positive values" do
@@ -249,7 +250,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(1)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Only negative numbers")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Only negative numbers", :not_negative))
     end
   end
 
@@ -273,7 +274,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(-1)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be non-negative")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be non-negative", :negative))
     end
 
     it "supports custom error message" do
@@ -281,7 +282,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(-5)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Cannot be negative")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Cannot be negative", :negative))
     end
   end
 
@@ -305,7 +306,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(1)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be non-positive")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be non-positive", :positive))
     end
 
     it "supports custom error message" do
@@ -313,7 +314,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(5)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Cannot be positive")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Cannot be positive", :positive))
     end
   end
 
@@ -332,7 +333,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(23)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("must be a multiple of 5")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("must be a multiple of 5", :not_multiple_of))
     end
 
     it "works with negative multiples" do
@@ -347,7 +348,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(15)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Must be divisible by 10")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Must be divisible by 10", :not_multiple_of))
     end
   end
 
@@ -367,7 +368,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       [1, 3, 5, -1, -3].each do |val|
         result = validator.validate(val)
         expect(result.success?).to be false
-        expect(result.errors).to include("must be even")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be even", :not_even))
       end
     end
 
@@ -376,7 +377,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(3)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Only even numbers")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Only even numbers", :not_even))
     end
   end
 
@@ -396,7 +397,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       [0, 2, 4, -2, -4].each do |val|
         result = validator.validate(val)
         expect(result.success?).to be false
-        expect(result.errors).to include("must be odd")
+        expect(result.errors).to include(ValidatorRb::ValidationError.new("must be odd", :not_odd))
       end
     end
 
@@ -405,7 +406,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(2)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("Only odd numbers")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("Only odd numbers", :not_odd))
     end
   end
 
@@ -487,7 +488,7 @@ RSpec.describe ValidatorRb::IntegerValidator do
       result = validator.validate(nil)
 
       expect(result.success?).to be false
-      expect(result.errors).to include("is required")
+      expect(result.errors).to include(ValidatorRb::ValidationError.new("is required", :required))
     end
 
     it "passes for nil when optional" do

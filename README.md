@@ -39,7 +39,9 @@ result = validator.validate("hello")
 
 result.success?  # => true
 result.value     # => "hello"
-result.errors    # => []
+result.success?  # => true
+result.value     # => "hello"
+result.errors    # => [] # Array of ValidatorRb::ValidationError objects
 
 # With transformations
 validator = ValidatorRb.string.trim.lowercase.email
@@ -109,7 +111,9 @@ ValidatorRb.string.ends_with(".com").validate("example.com")
 validator = ValidatorRb.string.email.required
 result = validator.validate(nil)
 result.success?  # => false
-result.errors    # => ["is required"]
+result.success?  # => false
+result.errors.first.message # => "is required"
+result.errors.first.code    # => :required
 
 # Optional field (default - allows nil)
 validator = ValidatorRb.string.email.optional
@@ -240,12 +244,14 @@ Override default error messages for better user experience:
 # Default message
 validator = ValidatorRb.string.min(5)
 result = validator.validate("hi")
-result.errors  # => ["must be at least 5 characters"]
+result.errors.first.message # => "must be at least 5 characters"
+result.errors.first.code    # => :too_short
 
 # Custom message
 validator = ValidatorRb.string.min(5, message: "Password too short!")
 result = validator.validate("hi")
-result.errors  # => ["Password too short!"]
+result.errors.first.message # => "Password too short!"
+result.errors.first.code    # => :too_short
 
 # Works with all validators
 ValidatorRb.string.email(message: "Invalid email address")
@@ -296,13 +302,18 @@ result = validator.validate("hi")
 
 if result.failure?
   puts "Validation failed:"
-  result.errors.each { |error| puts "  - #{error}" }
+  result.errors.each do |error|
+    puts "  - Message: #{error.message}"
+    puts "  - Code:    #{error.code}"
+    puts "  - Path:    #{error.path}"
+  end
   # Output:
-  #   - must be at least 10 characters
-  #   - must be at most 5 characters
-  #   - must be a valid email
+  #   - Message: must be at least 10 characters
+  #   - Code:    :too_short
+  #   - Path:    []
+  #   ...
   
-  # Or get formatted message
+  # Or get formatted message (backward compatibility)
   puts result.error_message
   # => "must be at least 10 characters, must be at most 5 characters, must be a valid email"
 end
@@ -317,9 +328,21 @@ result = validator.validate(value)
 
 result.success?       # Boolean: true if validation passed
 result.failure?       # Boolean: true if validation failed
-result.errors         # Array: list of error messages
+result.errors         # Array<ValidationError>: list of error objects
 result.error_message  # String: errors joined by ", "
 result.value          # Object: transformed value (or original if no transformations)
+
+### ValidationError Object
+
+```ruby
+error = result.errors.first
+
+error.message # String: Human-readable error message
+error.code    # Symbol: Machine-readable error code (e.g., :too_short, :invalid_email)
+error.path    # Array: Path to the invalid field (default: [])
+error.meta    # Hash: Additional context (default: {})
+error.to_h    # Hash: Serialized error representation
+```
 ```
 
 ## Development
