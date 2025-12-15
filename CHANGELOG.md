@@ -35,6 +35,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `non_empty_string` - combines required, trim, and non_empty
   - `trimmed_email` - combines trim, lowercase, and email
 - `Result#value` attribute to access transformed values
+- **ArrayValidator**:
+  - Size validators: `min_items`, `max_items`, `length`, `non_empty`
+  - Content validators: `unique`, `contains` / `includes`
+  - Element validation: `of(validator)` for nested validation
+  - Transformations: `compact`, `flatten`
 - **Structured Error Object**:
   - New `ValidationError` class with `message`, `code`, `path`, and `meta` attributes.
   - Specific error codes for all validators (e.g., `:too_short`, `:invalid_email`).
