@@ -208,11 +208,6 @@ discount_validator = ValidatorRb.integer
   .max(100)
   .optional
 
-## Array Validators
-
-### Size Constraints
-
-```ruby
 # Minimum items
 ValidatorRb.array.min_items(1).validate([1, 2, 3])
 
@@ -265,14 +260,7 @@ result.value # => [1, 2]
 validator = ValidatorRb.array.flatten
 result = validator.validate([[1, 2], [3, 4]])
 result.value # => [1, 2, 3, 4]
-```
-```
 
-## Transformations
-
-Transformations modify the value **before** validation runs. The transformed value is available in `result.value`.
-
-```ruby
 # Trim whitespace
 validator = ValidatorRb.string.trim
 result = validator.validate("  hello  ")
@@ -392,8 +380,6 @@ result.error_message  # String: errors joined by ", "
 result.value          # Object: transformed value (or original if no transformations)
 
 ### ValidationError Object
-
-```ruby
 error = result.errors.first
 
 error.message # String: Human-readable error message
@@ -402,13 +388,13 @@ error.path    # Array: Path to the invalid field (default: [])
 error.meta    # Hash: Additional context (default: {})
 error.to_h    # Hash: Serialized error representation
 ```
-```
 
 ## Development
 
 After checking out the repo, run:
 
 ```bash
+
 bundle install
 bundle exec rspec
 ```
@@ -416,6 +402,7 @@ bundle exec rspec
 To run tests with coverage:
 
 ```bash
+
 bundle exec rspec --format documentation
 ```
 
@@ -433,7 +420,7 @@ Bug reports and pull requests are welcome on GitHub!
 
 ## Roadmap
 
-- [ ] Additional validators (float, boolean, array, hash)
+- [ ] Additional validators (float, boolean, hash)
 - [ ] Async validation support
 - [ ] Conditional validations
 - [ ] Custom validator registration
