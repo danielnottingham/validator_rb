@@ -5,6 +5,7 @@ require_relative "validator_rb/result"
 require_relative "validator_rb/base_validator"
 require_relative "validator_rb/string_validator"
 require_relative "validator_rb/integer_validator"
+require_relative "validator_rb/array_validator"
 
 # Main ValidatorRb module
 #
@@ -46,6 +47,17 @@ module ValidatorRb
     #   result = validator.validate(50)
     def integer
       IntegerValidator.new
+    end
+
+    # Creates a new ArrayValidator instance
+    #
+    # @return [ArrayValidator] a new array validator instance
+    #
+    # @example
+    #   validator = ValidatorRb.array.min_items(1)
+    #   result = validator.validate([1, 2, 3])
+    def array
+      ArrayValidator.new
     end
   end
 end

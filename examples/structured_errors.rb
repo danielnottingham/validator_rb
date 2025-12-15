@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "../lib/validator_rb"
 
 puts "=== Structured Error Handling Example ==="

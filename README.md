@@ -3,7 +3,7 @@
 A fluent, type-safe schema validation library for Ruby inspired by Zod. Build complex validations with chainable methods, custom error messages, and built-in transformations.
 
 [![Ruby](https://img.shields.io/badge/ruby-3.2+-red.svg)](https://www.ruby-lang.org)
-[![Tests](https://img.shields.io/badge/tests-143%20passing-success.svg)](spec/)
+[![Tests](https://img.shields.io/badge/tests-166%20passing-success.svg)](spec/)
 [![Coverage](https://img.shields.io/badge/coverage-100%25-success.svg)](coverage/)
 
 ## Features
@@ -207,6 +207,65 @@ discount_validator = ValidatorRb.integer
   .min(0)
   .max(100)
   .optional
+
+## Array Validators
+
+### Size Constraints
+
+```ruby
+# Minimum items
+ValidatorRb.array.min_items(1).validate([1, 2, 3])
+
+# Maximum items
+ValidatorRb.array.max_items(5).validate([1, 2, 3])
+
+# Exact length
+ValidatorRb.array.length(3).validate([1, 2, 3])
+
+# Not empty
+ValidatorRb.array.non_empty.validate([1])
+```
+
+### Content Validation
+
+```ruby
+# Unique elements
+ValidatorRb.array.unique.validate([1, 2, 3])
+
+# Contains specific element
+ValidatorRb.array.contains("admin").validate(["user", "admin"])
+ValidatorRb.array.includes(1).validate([1, 2, 3])
+```
+
+### Element Validation
+
+Validate each element in the array using another validator:
+
+```ruby
+# Array of strings
+ValidatorRb.array.of(ValidatorRb.string).validate(["a", "b"])
+
+# Array of positive integers
+ValidatorRb.array.of(ValidatorRb.integer.positive).validate([1, 2, 3])
+
+# Nested arrays
+inner = ValidatorRb.array.of(ValidatorRb.integer)
+ValidatorRb.array.of(inner).validate([[1, 2], [3, 4]])
+```
+
+### Transformations
+
+```ruby
+# Compact (remove nil)
+validator = ValidatorRb.array.compact
+result = validator.validate([1, nil, 2])
+result.value # => [1, 2]
+
+# Flatten
+validator = ValidatorRb.array.flatten
+result = validator.validate([[1, 2], [3, 4]])
+result.value # => [1, 2, 3, 4]
+```
 ```
 
 ## Transformations
