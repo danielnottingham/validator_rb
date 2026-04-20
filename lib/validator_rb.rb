@@ -6,6 +6,7 @@ require_relative "validator_rb/base_validator"
 require_relative "validator_rb/string_validator"
 require_relative "validator_rb/integer_validator"
 require_relative "validator_rb/array_validator"
+require_relative "validator_rb/object_validator"
 
 # Main ValidatorRb module
 #
@@ -58,6 +59,20 @@ module ValidatorRb
     #   result = validator.validate([1, 2, 3])
     def array
       ArrayValidator.new
+    end
+
+    # Creates a new ObjectValidator instance
+    #
+    # @param schema [Hash{Symbol,String=>BaseValidator}] field validators
+    # @return [ObjectValidator]
+    #
+    # @example
+    #   validator = ValidatorRb.object(
+    #     name: ValidatorRb.string.required,
+    #     email: ValidatorRb.string.email.required
+    #   )
+    def object(schema = {})
+      ObjectValidator.new(schema)
     end
   end
 end
