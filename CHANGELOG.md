@@ -40,6 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Content validators: `unique`, `contains` / `includes`
   - Element validation: `of(validator)` for nested validation
   - Transformations: `compact`, `flatten`
+- **ObjectValidator** (closes #9):
+  - Schema-based validation via `ValidatorRb.object(field: sub_validator, ...)`
+  - Symbol and string keys are interchangeable between schema and input
+  - Nested errors carry a composed key path (e.g. `[:address, :zip]`), enabling arbitrary nesting of objects inside objects and objects inside arrays
+  - Schema modifiers: `strict` (rejects undeclared keys with `:unknown_key`), `partial` (treats every key as optional), `pick(keys)` / `omit(keys)` (derive a narrower schema) — `partial` / `pick` / `omit` return fresh instances and preserve flags
 - **Structured Error Object**:
   - New `ValidationError` class with `message`, `code`, `path`, and `meta` attributes.
   - Specific error codes for all validators (e.g., `:too_short`, `:invalid_email`).

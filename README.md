@@ -283,6 +283,70 @@ result.success?  # => true
 result.value     # => "hello"
 ```
 
+## Object Validators
+
+Validate hashes against a schema of per-field sub-validators. Schema keys and input keys can be either symbols or strings — they are matched interchangeably.
+
+### Basic Schema
+
+```ruby
+user_validator = ValidatorRb.object(
+  name: ValidatorRb.string.min(1).required,
+  email: ValidatorRb.string.email.required,
+  age: ValidatorRb.integer.min(0).optional
+)
+
+result = user_validator.validate(
+  name: "Alice",
+  email: "alice@example.com",
+  age: 30
+)
+result.success?  # => true
+```
+
+### Nested Objects and Error Paths
+
+Errors from nested fields carry a composed `path` so you can tell where each failure happened.
+
+```ruby
+validator = ValidatorRb.object(
+  name: ValidatorRb.string.required,
+  address: ValidatorRb.object(
+    street: ValidatorRb.string.required,
+    zip: ValidatorRb.string.regex(/\A\d{5}\z/).optional
+  )
+)
+
+result = validator.validate(name: "Alice", address: { street: "Main", zip: "abc" })
+result.errors.first.path # => [:address, :zip]
+result.errors.first.code # => :invalid_format
+```
+
+Objects can be nested inside arrays too via `ValidatorRb.array.of(ValidatorRb.object(...))`.
+
+### Schema Modifiers
+
+```ruby
+base = ValidatorRb.object(
+  name: ValidatorRb.string.required,
+  email: ValidatorRb.string.email.required,
+  password: ValidatorRb.string.min(8).required
+)
+
+# Reject keys that are not declared in the schema
+base.strict.validate(name: "Alice", email: "a@b.c", password: "secret123", extra: 1)
+# => error with code :unknown_key, path: [:extra]
+
+# Treat every declared key as optional (missing keys are skipped)
+base.partial.validate({}) # success
+
+# Narrow the schema to specific keys
+login_validator  = base.pick([:email, :password])
+public_validator = base.omit([:password])
+```
+
+`partial`, `pick`, and `omit` return **new** validator instances, so a single base schema can be reused safely for login, update, and public-view variants without cross-contamination. `strict` mutates the receiver, matching the existing `required` / `optional` style.
+
 ## Custom Error Messages
 
 Override default error messages for better user experience:
@@ -420,7 +484,7 @@ Bug reports and pull requests are welcome on GitHub!
 
 ## Roadmap
 
-- [ ] Additional validators (float, boolean, hash)
+- [ ] Additional validators (float, boolean)
 - [ ] Async validation support
 - [ ] Conditional validations
 - [ ] Custom validator registration
