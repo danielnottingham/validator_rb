@@ -35,7 +35,7 @@ Gem::Specification.new do |spec|
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
   spec.add_development_dependency "debug", "~> 1.9"
-  spec.add_development_dependency "simplecov", "~> 0.22"
+  spec.add_development_dependency "simplecov", "~> 1.0"
   spec.add_development_dependency "webrick", "~> 1.8"
   spec.add_development_dependency "yard", "~> 0.9"
 
